@@ -17,6 +17,7 @@ type Article struct {
 	Content string `json:"content"`
 }
 var Articles []Article
+var ArticleLen int
 
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,7 @@ func main() {
 		Article{Id: "1", Title: "Hello", Desc: "Article Description", Content: "Article Content"},
 		Article{Id: "2", Title: "Hello 2", Desc: "Article Description 2", Content: "Article Content 2"},
 	}
+	ArticleLen = len(Articles)
 
 	handleRequests()
 }
@@ -62,7 +64,7 @@ func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
 	key := vars["id"]
 
 	index, err := strconv.Atoi(key)
-	if err == nil {
+	if err == nil && index < ArticleLen {
 		article := Articles[index-1]
 		error := json.NewEncoder(w).Encode(article)
 		if error != nil {
@@ -80,5 +82,17 @@ func createNewArticle(w http.ResponseWriter, r *http.Request) {
 	// get the body of our POST request
 	// return the string response containing the request body
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	fmt.Fprintf(w, "%+v", string(reqBody))
+	var article Article
+
+	json_unmarshal := json.Unmarshal(reqBody, &article)
+	if json_unmarshal != nil {
+		fmt.Fprintf(w, "Error, could not process request")
+	} else {
+		Articles = append(Articles, article)
+		res := json.NewEncoder(w).Encode(article)
+		if res != nil {
+			fmt.Fprintf(w, "Error, could not process request")
+		}
+		ArticleLen += 1
+	}
 }
