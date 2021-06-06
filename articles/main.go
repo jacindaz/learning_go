@@ -42,7 +42,7 @@ func main() {
 	handleRequests()
 }
 
-func returnAllArticles(w http.ResponseWriter, r *http.Request){
+func returnAllArticles(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: returnAllArticles")
 
 	// encodes Articles array into a JSON string
@@ -50,7 +50,7 @@ func returnAllArticles(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(Articles)
 }
 
-func returnSingleArticle(w http.ResponseWriter, r *http.Request){
+func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: returnSingleArticle")
 
 	vars := mux.Vars(r)
