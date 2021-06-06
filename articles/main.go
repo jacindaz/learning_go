@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,6 +30,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/articles", returnAllArticles)
 	myRouter.HandleFunc("/articles/{id}", returnSingleArticle)
+	myRouter.HandleFunc("/article", createNewArticle).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
@@ -69,4 +71,14 @@ func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprintf(w, "Error, could not process request")
 	}
+}
+
+// Use curl to hit:
+// curl --header "Content-Type: application/json" --request POST --data '{"Id":"3","Title":"Hello 3","Desc":"Article Description 3","Content":"Article Content 3"}' "http://localhost:10000/article"
+func createNewArticle(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Endpoint Hit: createNewArticle")
+	// get the body of our POST request
+	// return the string response containing the request body
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	fmt.Fprintf(w, "%+v", string(reqBody))
 }
