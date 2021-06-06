@@ -15,8 +15,8 @@ type Article struct {
 	Desc 	string `json:"desc"`
 	Content string `json:"content"`
 }
-
 var Articles []Article
+
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Wecome to the HomePage!")
@@ -47,7 +47,10 @@ func returnAllArticles(w http.ResponseWriter, r *http.Request) {
 
 	// encodes Articles array into a JSON string
 	// writes as part of response
-	json.NewEncoder(w).Encode(Articles)
+	error := json.NewEncoder(w).Encode(Articles)
+	if error != nil {
+		fmt.Fprintf(w, "Error, could not process request")
+	}
 }
 
 func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +62,10 @@ func returnSingleArticle(w http.ResponseWriter, r *http.Request) {
 	index, err := strconv.Atoi(key)
 	if err == nil {
 		article := Articles[index-1]
-		json.NewEncoder(w).Encode(article)
+		error := json.NewEncoder(w).Encode(article)
+		if error != nil {
+			fmt.Fprintf(w, "Error, could not process request")
+		}
 	} else {
 		fmt.Fprintf(w, "Error, could not process request")
 	}
