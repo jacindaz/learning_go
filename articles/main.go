@@ -28,10 +28,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	// routes
 	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/articles", returnAllArticles)
-	myRouter.HandleFunc("/articles/{id}", returnSingleArticle)
+	myRouter.HandleFunc("/", homePage).Methods("GET")
+	myRouter.HandleFunc("/articles", returnAllArticles).Methods("GET")
+	myRouter.HandleFunc("/article/{id}", returnSingleArticle).Methods("GET")
 	myRouter.HandleFunc("/article", createNewArticle).Methods("POST")
+	myRouter.HandleFunc("/article/{id}", deleteArticle).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
@@ -94,5 +95,23 @@ func createNewArticle(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Error, could not process request")
 		}
 		ArticleLen += 1
+	}
+}
+
+// Use curl to hit:
+// curl --header "Content-Type: application/json" --request DELETE "http://localhost:10000/article/1"
+func deleteArticle(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Endpoint Hit: deleteArticle")
+
+	vars := mux.Vars(r)
+	strId := vars["id"]
+	id, error := strconv.Atoi(strId)
+	if error == nil && id < ArticleLen {
+		index := id-1
+		// Remove article
+		Articles = append(Articles[:index], Articles[index+1:]...)
+		ArticleLen -= 1
+	} else {
+		fmt.Fprintf(w, "Error, could not process request")
 	}
 }
