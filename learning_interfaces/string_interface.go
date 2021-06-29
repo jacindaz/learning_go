@@ -17,6 +17,16 @@ type Article struct {
 	Author string
 }
 
+type Book struct {
+	Title string
+	Author string
+	Pages int
+}
+
+func (b Book) String() string {
+	return fmt.Sprintf("The %q book was written by %s", b.Title, b.Author)
+}
+
 // (a Article): receiver, String() must be called by a type Article
 // String(): the function name, with no arguments
 // string: the return type
@@ -26,12 +36,18 @@ func (a Article) String() string {
 }
 
 func main() {
-	a := Article{
+	article := Article{
 		Title: "Understanding Interfaces in Go",
 		Author: "Jacinda Zhong",
 	}
+	Print(article)
 
-	Print(a)
+	book := Book{
+		Title: "all About Go",
+		Author: "pumpkin",
+		Pages: 25,
+	}
+	Print(book)
 }
 
 func Print(s fmt.Stringer) {
