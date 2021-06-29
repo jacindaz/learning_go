@@ -17,6 +17,10 @@ type Article struct {
 	Author string
 }
 
+// (a Article): receiver, String() must be called by a type Article
+// String(): the function name, with no arguments
+// string: the return type
+// Implements the String() method
 func (a Article) String() string {
 	return fmt.Sprintf("The %q article was written by %s", a.Title, a.Author)
 }
@@ -27,5 +31,9 @@ func main() {
 		Author: "Jacinda Zhong",
 	}
 
-	fmt.Println(a.String())
+	Print(a)
+}
+
+func Print(s fmt.Stringer) {
+	fmt.Println(s.String())
 }
